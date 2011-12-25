@@ -50,6 +50,7 @@ module Mongo
           }, {
             # then update
             '$addToSet' => { 'follows.followers' => options[:follower_id] },
+            '$set' => { "follows.followed_timestamps.#{options[:follower_id]}" => Time.now },
             '$inc' => {
               'follows.count' => +1
             }
@@ -63,6 +64,7 @@ module Mongo
           }, {
             # then update
             '$pull' => { 'follows.followers' => options[:follower_id] },
+            '$unset' => { "follows.followed_timestamps.#{options[:follower_id]}" => 1 },
             '$inc' => {
               'follows.count' => -1
             }

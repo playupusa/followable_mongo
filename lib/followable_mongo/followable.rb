@@ -7,6 +7,7 @@ module Mongo
     extend ActiveSupport::Concern
 
     DEFAULT_FOLLOWS = {
+      'followed_timestamps' => {},
       'followers' => [],
       'count' => 0
     }
@@ -55,6 +56,11 @@ module Mongo
         follower_ids.include?(follower_id)
       end
 
+      def timestamp_of_follower(follower)
+        follower_id = follower.is_a?(BSON::ObjectId) ? follower : follower.id
+        follows_timestamps[follower_id.to_s]
+      end
+
       # Array of follower ids
       def follower_ids
         follows.try(:[], 'followers') || []
@@ -62,6 +68,10 @@ module Mongo
 
       def follows_count
         follows.try(:[], 'count') || 0
+      end
+
+      def follows_timestamps
+        follows.try(:[], 'followed_timestamps') || {}
       end
 
       def followers(klass)
