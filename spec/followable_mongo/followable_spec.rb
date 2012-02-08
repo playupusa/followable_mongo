@@ -61,10 +61,9 @@ describe Mongo::Followable do
       @post.should be_is_a Post
       @post.should_not be_new_record
 
-      @post.follows.should == {
-        'followers' => [@user1.id],
-        'count' => 1
-      }
+      @post.follows['followers'].should == [@user1.id]
+      @post.follows['count'].should == 1
+      @post.follows['followed_timestamps'].should_not be_empty
     end
 
     it 'validates' do
