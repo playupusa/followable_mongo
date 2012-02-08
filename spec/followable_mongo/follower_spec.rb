@@ -85,7 +85,7 @@ describe Mongo::Follower do
 
     it 'validates' do
       @post2.follows_count.should == 1
-      Post.followed_by(@user1).to_a.should == [ @post1, @post2 ]
+      Post.followed_by(@user1).to_a.should =~ [ @post1, @post2 ]
     end
   end
 

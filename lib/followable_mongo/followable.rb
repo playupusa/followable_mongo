@@ -42,42 +42,40 @@ module Mongo
       end
     end
 
-    module InstanceMethods
-      def follow(options)
-        options[:followed_id] = id
-        options[:followed] = self
-        options[:follower_id] ||= options[:follower].id
+    def follow(options)
+      options[:followed_id] = id
+      options[:followed] = self
+      options[:follower_id] ||= options[:follower].id
 
-        self.class.follow(options)
-      end
-
-      def followed_by?(follower)
-        follower_id = follower.is_a?(BSON::ObjectId) ? follower : follower.id
-        follower_ids.include?(follower_id)
-      end
-
-      def timestamp_of_follower(follower)
-        follower_id = follower.is_a?(BSON::ObjectId) ? follower : follower.id
-        follows_timestamps[follower_id.to_s]
-      end
-
-      # Array of follower ids
-      def follower_ids
-        follows.try(:[], 'followers') || []
-      end
-
-      def follows_count
-        follows.try(:[], 'count') || 0
-      end
-
-      def follows_timestamps
-        follows.try(:[], 'followed_timestamps') || {}
-      end
-
-      def followers(klass)
-        klass.where(:_id => { '$in' =>  follower_ids })
-      end
-
+      self.class.follow(options)
     end
+
+    def followed_by?(follower)
+      follower_id = follower.is_a?(BSON::ObjectId) ? follower : follower.id
+      follower_ids.include?(follower_id)
+    end
+
+    def timestamp_of_follower(follower)
+      follower_id = follower.is_a?(BSON::ObjectId) ? follower : follower.id
+      follows_timestamps[follower_id.to_s]
+    end
+
+    # Array of follower ids
+    def follower_ids
+      follows.try(:[], 'followers') || []
+    end
+
+    def follows_count
+      follows.try(:[], 'count') || 0
+    end
+
+    def follows_timestamps
+      follows.try(:[], 'followed_timestamps') || {}
+    end
+
+    def followers(klass)
+      klass.where(:_id => { '$in' =>  follower_ids })
+    end
+
   end
 end
